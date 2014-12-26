@@ -85,6 +85,7 @@ public class QuizTerm implements Serializable {
 			row.add(Integer.toString(question.getLevel()));
 			row.add(Integer.toString(question.getSublevel()));
 			row.add(question.getDefinition());
+			row.add(question.getTerm() + ": " + question.getDefinition());
 			row.add(question.getTerm());
 			row.addAll(question.getAlts());
 			

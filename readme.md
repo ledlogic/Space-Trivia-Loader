@@ -4,7 +4,6 @@
 
 This is a tool for building Trivia documents for the project
 https://github.com/ledlogic/Space-Trivia, which is based on 
-
 https://github.com/ruscoe/Space-Trivia
 
 ## Source

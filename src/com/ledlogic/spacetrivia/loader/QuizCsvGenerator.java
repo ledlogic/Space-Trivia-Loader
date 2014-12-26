@@ -16,13 +16,13 @@ public class QuizCsvGenerator {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		
+
 		// setup
 		String inFileName = "./data/ep-terminology.txt";
-		
+
 		int level = 4;
 		int sublevel = 1;
-		
+
 		// load lines
 		File file = new File(inFileName);
 		List<String> lines = null;
@@ -31,25 +31,25 @@ public class QuizCsvGenerator {
 		} catch (Exception e) {
 			return;
 		}
-		
+
 		// aggregate lines
-		for (int i=lines.size()-1;i>=0;i--) {
+		for (int i = lines.size() - 1; i >= 0; i--) {
 			String line = lines.get(i);
 			if (!line.startsWith("n ")) {
 				lines.remove(i);
-				lines.add(i, lines.get(i-1) + line);
-				lines.remove(i-1);
+				lines.add(i, lines.get(i - 1) + " " + line);
+				lines.remove(i - 1);
 			}
 		}
-		
+
 		// cleanup lines, gather terms array
 		List<QuizTerm> terms = new ArrayList<QuizTerm>();
-		for (int i=0;i<lines.size();i++) {
+		for (int i = 0; i < lines.size(); i++) {
 			String line = lines.get(i);
 			String[] s = line.split(":");
 			String term = s[0];
 			String definition = s[1];
-			
+
 			if (term.startsWith("n ")) {
 				term = term.substring(2);
 			}
@@ -57,6 +57,9 @@ public class QuizCsvGenerator {
 				definition = definition.substring(2);
 			}
 			
+			term = term.trim();
+			definition = definition.trim();
+
 			QuizTerm quizTerm = new QuizTerm();
 			quizTerm.setLevel(level);
 			quizTerm.setSublevel(sublevel);
@@ -64,12 +67,12 @@ public class QuizCsvGenerator {
 			quizTerm.setDefinition(definition);
 			terms.add(quizTerm);
 		}
-		
+
 		QuizTermListSelector selector = new QuizTermListSelector(terms);
-		
+
 		// get alts
-		for (QuizTerm quizTerm: terms) {
-			
+		for (QuizTerm quizTerm : terms) {
+
 			// get other quiz terms
 			List<QuizTerm> alts = new ArrayList<QuizTerm>();
 			while (alts.size() < 2) {
@@ -78,25 +81,25 @@ public class QuizCsvGenerator {
 					alts.add(addTerm);
 				}
 			}
-			
+
 			// strings
 			List<String> altStrings = new ArrayList<String>();
-			for (QuizTerm alt: alts) {
+			for (QuizTerm alt : alts) {
 				String altTerm = alt.getTerm();
 				altStrings.add(altTerm);
 			}
 			quizTerm.setAlts(altStrings);
 		}
-		
+
 		// get csv lines
 		List<String[]> quizTermLines = QuizTerm.toStringArray(terms);
-		
+
 		// write CSV
 		File dirFile = new File("out");
 		if (!dirFile.exists()) {
 			dirFile.mkdirs();
 		}
-		
+
 		// create file writer
 		String csvName = "out/questions_eclipse_phase.csv";
 		File csvFile = new File(csvName);
